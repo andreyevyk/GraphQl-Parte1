@@ -1,36 +1,38 @@
 const executaQuery = require('../database/queries')
 
 class Cliente {
-  lista(res) {
-    const sql = 'SELECT * FROM Clientes'
+   lista() {
+      const sql = 'SELECT * FROM Clientes'
 
-    executaQuery(res, sql)
+      return executaQuery(sql)
   }
 
-  buscaPorId(res, id) {
+  buscaPorId(id) {
     const sql = `SELECT * FROM Clientes WHERE id=${id}`
 
-    executaQuery(res, sql)
+   return executaQuery(sql).then(clientes => clientes[0])
   }
 
-  adiciona(res, item) {
+  adiciona(item) {
     const { nome, cpf } = item
-    const sql = `INSERT INTO Clientes(nome, CPF) VALUES('${nome}', '${cpf}')`
+    const sql = `INSERT INTO Clientes(nome, CPF) VALUES('${nome}', '${cpf}') RETURNING * `
 
-    executaQuery(res, sql)
+    return executaQuery(sql).then(res => res[0]);
+
   }
 
-  atualiza(res, novoItem, id) {
-    const { nome, cpf } = novoItem
-    const sql = `UPDATE Clientes SET nome='${nome}', CPF='${cpf}' WHERE id=${id}`
+  atualiza(novoItem) {
+   const {id, nome, cpf } = novoItem
+   const sql = `UPDATE Clientes SET nome='${nome}', CPF='${cpf}' WHERE id=${id} RETURNING *`
 
-    executaQuery(res, sql)
+   return executaQuery(sql).then(res => res[0]);
+   
   }
 
-  deleta(res, id) {
+  deleta(id) {
     const sql = `DELETE FROM Clientes WHERE id=${id}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql).then(() => id);
   }
 }
 

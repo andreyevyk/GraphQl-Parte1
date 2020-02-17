@@ -1,32 +1,47 @@
 const executaQuery = require('../database/queries')
 
 class Pet {
-  lista(res) {
-    const sql = 'SELECT * FROM Pets'
+   lista() {
+      const sql = `SELECT 
+                     Pets.id,Pets.nome, Pets.tipo, Pets.observacoes, 
+                     Clientes.id as donoId, Clientes.nome as donoNome, Clientes.cpf as donoCpf
+                     FROM Pets INNER JOIN Clientes ON Pets.donoId = Clientes.id`;
+   
+      return executaQuery(sql).then(pets => 
+         pets.map(pet => 
+            ({
+               id: pet.id,
+               nome: pet.nome,
+               tipo: pet.tipo,
+               observacoes: pet.observacoes,
+               dono: {
+                  id: pet.donoid,
+                  nome: pet.dononome,
+                  cpf: pet.donocpf,
+               }
+            })
+         )
+      )
+   }
 
-    executaQuery(res, sql)
-  }
-
-  buscaPorId(res, id) {
+  buscaPorId(id) {
     const sql = `SELECT * FROM Pets WHERE id=${parseInt(id)}`
 
-    executaQuery(res, sql)
+    return executaQuery(sql).then(res => res[0]);
   }
 
-  adiciona(res, item) {
-    const { nome, dono, tipo, observacoes } = item
+  adiciona(item) {
+    const { nome, donoid, tipo, observacoes } = item
+    const sql = `INSERT INTO Pets(nome, donoid, tipo, observacoes) VALUES('${nome}', ${donoid}, '${tipo}', '${observacoes}') RETURNING * `
 
-    const sql = `INSERT INTO Pets(nome, donoId, tipo, observacoes) VALUES('${nome}', ${dono}, '${tipo}', '${observacoes}')`
-
-    executaQuery(res, sql)
+    return executaQuery(sql).then(res => res[0]);
   }
 
-  atualiza(res, novoItem, id) {
-    const { nome, dono, tipo, observacoes } = novoItem
+  atualiza(novoItem) {
+    const { id, nome, donoid, tipo, observacoes } = novoItem
+    const sql = `UPDATE Pets SET nome='${nome}', donoid=${donoid}, tipo='${tipo}', observacoes='${observacoes}' WHERE id=${id} RETURNING *`
 
-    const sql = `UPDATE Pets SET nome='${nome}', donoId=${dono}, tipo='${tipo}', observacoes='${observacoes}' WHERE id=${id}`
-
-    executaQuery(res, sql)
+    return executaQuery(sql).then(res => res[0]);
   }
 
   deleta(res, id) {

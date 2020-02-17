@@ -17,7 +17,7 @@ class Atendimento {
     const { cliente, pet, servico, status, observacoes } = item
     const data = new Date().toLocaleDateString()
 
-    const sql = `INSERT INTO Atendimentos(clienteId, petId, servicoId, data, status, observacoes) VALUES(${cliente}, ${pet}, ${servico}, '${data}', '${status}', '${observacoes}')`
+    const sql = `INSERT INTO Atendimentos(clienteId, petId, servicoId, data, status, observacoes) VALUES(${cliente}, ${pet}, ${servico}, '${data}', '${status}', '${observacoes}') RETURNING * `
 
     executaQuery(res, sql)
   }

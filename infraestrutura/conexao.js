@@ -1,11 +1,11 @@
-const mysql = require('mysql')
+const { Pool } = require('pg');
 
-const conexao = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'admin',
-  database: 'agenda-petshop'
-})
+const conexao = new Pool({
+   user: 'admin',
+   password: 'postgres_admin',
+   host: 'localhost',
+   port: 15432,
+   database: 'agenda-petshop'
+});
 
 module.exports = conexao

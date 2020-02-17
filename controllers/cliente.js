@@ -2,6 +2,7 @@ const Operations = require('../infraestrutura/operations')
 
 const Clientes = new Operations('cliente')
 
+
 module.exports = app => {
   app.get('/clientes', (req, res) => {
     Clientes.lista(res)
@@ -14,9 +15,8 @@ module.exports = app => {
   })
 
   app.post('/clientes/cliente', (req, res) => {
-    const cliente = req.body
-
-    Clientes.adiciona(res, cliente)
+    const cliente = req.body;
+    Clientes.adiciona(res, cliente);
   })
 
   app.put('/clientes/cliente/:id', (req, res) => {
